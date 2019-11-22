@@ -19,6 +19,8 @@ def equaliza(img):
 def geraBase():
 
     video_capture = cv2.VideoCapture(0)
+
+    #arquivo com as features do haar classifier
     cascade_path = 'haar.xml'
     clf = cv2.CascadeClassifier(cascade_path)
 
@@ -53,6 +55,8 @@ def geraBase():
         cv2.imshow('Video', frame)
 
 def criaArquivoDeRotulo(pasta):
+
+    #gera arquivo que terá a associação entre o path da imagem com seu respectivo rótulo
     label = 0
     f = open("TRAIN", "w+")
     for dirPrincipal, nomeDirs, nomeArqs in os.walk(pasta):
@@ -67,6 +71,7 @@ def criaArquivoDeRotulo(pasta):
 def criaDicionarioDeImagens(fPoint):
     lines = fPoint.readlines()
 
+    #gera um dicionário para futuro mapeamento de chave/valor
     dicionarioDeFotos = {}
     for line in lines:
         filename, label = line.rstrip().split(';')
@@ -78,6 +83,8 @@ def criaDicionarioDeImagens(fPoint):
     return dicionarioDeFotos
 
 def treinaModelo(dicionarioDePessoas):
+
+    #treinamento do modelo
     model = cv2.face.EigenFaceRecognizer_create()
     listkey = []
     listvalue = []
@@ -90,6 +97,8 @@ def treinaModelo(dicionarioDePessoas):
     return model
 
 def reconheceImagem(modelo,path):
+
+    #realiza a classificação dos rostos encontrados em uma imagem de input
     face_cascade = cv2.CascadeClassifier('haar.xml')
     img = cv2.imread(path)
 
