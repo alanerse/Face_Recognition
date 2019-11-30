@@ -39,7 +39,7 @@ def geraBase():
     #captura 50 imagens da pessoa e salva na pasta relacionada
     while qnt < max:
 
-        ret, frame = video_capture.read()
+        frame = cv2.imread('figs/vai.jpeg')
         frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = clf.detectMultiScale(frame_gray, 1.3, 5)
 
@@ -47,6 +47,7 @@ def geraBase():
             frame = cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 255, 0), 2)
             nframe = frame[y:y + h, x:x + w]
             nframe = cv2.resize(nframe, (255, 255))
+            nframe = cv2.cvtColor(nframe, cv2.COLOR_BGR2GRAY)
             cv2.imwrite(os.path.join(directory, str(str(count) + '.jpg')), nframe)
             qnt += 1
             count += 1
@@ -116,17 +117,47 @@ def reconheceImagem(modelo,path):
             label = modelo.predict(rosto)
 
             font = cv2.FONT_HERSHEY_SIMPLEX
+            #if (label[0] == 0):
+            #    cv2.putText(img, 'Alan', (x - 20, y + h + 60), font, 3, (255, 0, 0), 5, cv2.LINE_AA)
+            #   img = cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+
             if (label[0] == 0):
-                cv2.putText(img, 'Alan', (x - 20, y + h + 60), font, 3, (255, 0, 0), 5, cv2.LINE_AA)
-                img = cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+                cv2.putText(img, 'Breno', (x - 20, y + h + 60), font, 3, (0, 0, 255), 5, cv2.LINE_AA)
+                img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
             if (label[0] == 1):
+                cv2.putText(img, 'Bruno', (x - 20, y + h + 60), font, 3, (0, 0, 255), 5, cv2.LINE_AA)
+                img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+
+            if (label[0] == 2):
+                cv2.putText(img, 'Caroline', (x - 20, y + h + 60), font, 3, (0, 0, 255), 5, cv2.LINE_AA)
+                img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+            if (label[0] == 3):
+                cv2.putText(img, 'Gilberto', (x - 20, y + h + 60), font, 3, (255, 0, 255), 5, cv2.LINE_AA)
+                img = cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 2)
+
+            if (label[0] == 4):
+                cv2.putText(img, 'Gustavo', (x - 20, y + h + 60), font, 3, (255, 0, 255), 5, cv2.LINE_AA)
+                img = cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 2)
+
+            if (label[0] == 5):
+                cv2.putText(img, 'Jaws', (x - 20, y + h + 60), font, 3, (255, 0, 255), 5, cv2.LINE_AA)
+                img = cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 2)
+
+            if (label[0] == 6):
                 cv2.putText(img, 'Jonata', (x - 20, y + h + 60), font, 3, (0, 0, 255), 5, cv2.LINE_AA)
                 img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-            if (label[0] == 2):
-                cv2.putText(img, 'Lorena', (x - 20, y + h + 60), font, 3, (255, 0, 255), 5, cv2.LINE_AA)
-                img = cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 2)
+            #if (label[0] == 7):
+                #    cv2.putText(img, 'Lorena', (x - 20, y + h + 60), font, 3, (0, 0, 255), 5, cv2.LINE_AA)
+                #img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+            if (label[0] == 7):
+                cv2.putText(img, 'Luis', (x - 20, y + h + 60), font, 3, (0, 0, 255), 5, cv2.LINE_AA)
+                img = cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
 
     img = cv2.resize(img, (int(0.75 * img.shape[1]), int(0.75 * img.shape[0])))
 
@@ -156,5 +187,92 @@ def main():
             reconheceImagem(modelo, str('figs/' + image_path))
 #-------------------------------------------------------------
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+ #   main() img = cv2.imread(path)
+
+hog = cv2.HOGDescriptor()
+face_cascade = cv2.CascadeClassifier('haar.xml')
+
+img1 = cv2.imread('figs/pai.jpeg')
+
+gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+for (x, y, w, h) in faces:
+
+    rosto = img1[y:y + h, x:x + w]
+
+    if w > 100 and h > 100:
+        rosto = cv2.resize(rosto, (255, 255))
+        rosto = cv2.cvtColor(rosto, cv2.COLOR_BGR2GRAY)
+
+    h1 = hog.compute(rosto)
+    soma = 0
+
+    dic = {'nome':'a', 'd':100000000000000.0}
+
+    for dirPrincipal, nomeDirs, nomeArqs in os.walk('images'):
+        for subDir in nomeDirs:
+            caminhoPasta = os.path.join(dirPrincipal, subDir)
+            for filename in os.listdir(caminhoPasta):
+                caminhoAbs = caminhoPasta + "\\" + filename
+                img2 = cv2.imread(caminhoAbs)
+                #img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+                #img2 = cv2.equalizeHist(img2)
+                h2 = hog.compute(img2)
+
+                soma = 0
+                for i in range(len(h1)):
+                    soma += ((h1[i] - h2[i])**2)
+
+                dist = soma ** (1/2)
+
+                #disti =[]
+
+                cv2.imshow("rosto", rosto)
+                print("rosto")
+                cv2.waitKey(0)
+
+                cv2.imshow("compara", img2)
+                print("imagem que ta sendo comparada")
+                cv2.waitKey(0)
+
+
+                # for i in range(len(h2)):
+                #
+                #     dist = h1[i]-h2[i]
+                #     disti.append(dist.item())
+                #
+                # if dic['d'] < max(disti):
+                #     dic['d'] = max(disti)
+                #     dic['nome'] = caminhoAbs
+                #
+                # disti.clear()
+
+                valor = dist[0].item()
+                print(str(valor))
+
+                if dic['d'] > valor:
+                    dic['d'] = valor
+                    dic['nome'] = caminhoAbs
+
+
+    print(dic['nome'] + str(dic['d']))
+
+
+
+
+#img2 = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+
+#img1 = cv2.equalizeHist(img1)
+#img2 = cv2.equalizeHist(img2)
+
+#h1 = hog.compute(img1)
+#h2 = hog.compute(img2)
+
+#for i in range(256):
+#   soma = ((h1[i] - h2[i])**2)
+
+#dist = soma ** (1/2)
+
+#geraBase()
